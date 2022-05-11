@@ -1,30 +1,20 @@
-/* 
-The concept of our project will involve one of our two bitmojis attempting to dodge a set of obstacles oncoming to the bitmojis. The player can choose at the beginning.
-The bitmojis can move forward, backwards, right, left, or jump to dodge an obstacle. 
-The bitmoji health will be represented by a health bar. 
-If hit after a certain amount of times, the bitmoji will 'die' and the game will end. 
-The score will be dictated by how much time they've lasted.
-Obstacles will increase in speed on ten second increments. 
+/* Global variable currentScene used to change in-game scenes */ 
+var currentScene = 0; // 0 = Splash Screen, 1 = Rules Screen, 2 = Player Ray, 3 = Player Ant, 4 = End/Restart Screen
 
-/* Global variable currentScene to switch scenes */ 
-var currentScene = 0; // 0 = splash screen, 1 = game screen, 2 = end screen
-
-/* Splash/Start screen function */ 
+/* 0: Splash/Start screen */ 
 var Splash = function () {
-    textSize (36); 
+    textSize (75); 
     fill(0, 0, 0);
-    text ("Escape Route!", 75, 20); 
+    text ("Escape", 74, 0); 
+    text ("Route!", 90, 60);
     textSize (25); 
     textSize (20);
-    text ("Written By: Anthony & Ray", 84, 297);
 }; 
-    background(78, 156, 0); 
+image(getImage("cute/WoodBlock"),-22, -199, 433, 663); // background
 
-/* Draw Anthony's bitmoji */ 
+// Draw & display bitmojis
 var drawAnt = function(x,y,h) {
-var x = 250;
-var y = 208;
-var h = 108;
+
 
     noStroke();
     fill(0, 0, 0);//hair color
@@ -51,14 +41,8 @@ var h = 108;
     arc(x+(h/150*3),y+(h/150*25),h/150*30,h/150*13,h/150*1,180);//mouth
     line(x-(h/150*13),y+(h/150*24),x+(h/150*18),y+(h/150*24));
 }; 
-    drawAnt(100,101,100); 
-    
-/* Draw Ray's Bitmoji */ 
+    drawAnt(256,250,100); 
 var drawRay = function(bitmojiX,bitmojiY,bitmojiHeight) {
-var bitmojiX = 148;
-var bitmojiY = 231;
-var bitmojiHeight = 45; 
-
     noStroke();
     fill(196, 162, 125); // skin color
     ellipse(bitmojiX+(bitmojiHeight/106*0),bitmojiY+(bitmojiHeight/106*-120),bitmojiHeight/106*88,bitmojiHeight/106*100); // face
@@ -129,7 +113,13 @@ var bitmojiHeight = 45;
     rect(bitmojiX+(bitmojiHeight/106*3),bitmojiY+(bitmojiHeight/106*-26),bitmojiHeight/106*14,bitmojiHeight/106*3); // b lettering
     rect(bitmojiX+(bitmojiHeight/106*15),bitmojiY+(bitmojiHeight/106*-35),bitmojiHeight/106*3,bitmojiHeight/106*11); // b lettering
 }; 
-    drawRay(100,100,100);
+    drawRay(136,267,45);
+
+// Text 
+textSize (20);
+text ("Written By:", 150, 178);
+text ("Ray", 118, 305);
+text ("Ant", 240, 307);
 
 /* Khan Button Class */ 
 var Button = function(config) {
@@ -141,12 +131,12 @@ var Button = function(config) {
     this.onClick = config.onClick || function() {};
 };
 Button.prototype.draw = function() {
-    fill(255, 152, 8);
-    rect(this.x, this.y, this.width, this.height, 5);
+    fill(196, 196, 196);
+    rect(this.x, this.y, this.width - 70, this.height, 30);
     fill(0, 0, 0);
-    textSize(20);
+    textSize(19);
     textAlign(LEFT, TOP);
-    text(this.label, this.x+10, this.y+this.height/4);
+    text(this.label, this.x+-10, this.y + 0 +this.height/4);
 };
 Button.prototype.isMouseInside = function() {
     return mouseX > this.x &&
@@ -160,34 +150,419 @@ Button.prototype.handleMouseClick = function() {
     }
 };
 
-/* Create & draw play button */ 
-var playButton = new Button({
-    x: 123,
-    y: 325,
-    label: "  Play Game!",
+/* In-game button types */ 
+var rulesButton = new Button({
+    x: 155,
+    y: 343,
+    label: "    Rules!",
     onClick: function() {
         currentScene = 1;
     }
 });
-playButton.draw();
+rulesButton.draw();
+var rayButton = new Button({
+    x: 25,
+    y: 318,
+    label: "      Ray",
+    onClick: function() {
+        currentScene = 2;
+    }
+});
+var antButton = new Button({
+    x: 302,
+    y: 318,
+    label: "      Ant",
+    onClick: function() {
+        currentScene = 3;
+    }
+});
+var restartButton = new Button({
+    x: 164,
+    y: 318,
+    label: "    Retry!",
+    onClick: function() {
+        Program.restart(); 
+    }
+});
 
-/* mouseClicked button for button */ 
-mouseClicked = function() {
-    if (currentScene === 0) { 
-        playButton.handleMouseClick(); }
-    }; 
+/* 1: Rules Screen */ 
+var ruleScreen = function() {
+    
+currentScene = 1; // Set currentScene value 
+image(getImage("space/background"),-5,-8,500,500); // Background image
 
-/* Main game screen (In Progress)  */ 
-var playScreen = function() {
-    background(255, 0, 0);
+// Display players for selection
+    var drawAnt = function(x,y,h) {
+    noStroke();
+    fill(0, 0, 0);//hair color
+    ellipse(x,y-(h/150*25),h/150*120,h/150*100);//hair
+
+    noStroke();
+    fill(156,114,72);//head color
+    ellipse(x,y,h/150*80,h/150*100); //Head
+    fill(255, 255, 255);//chisels color
+    noStroke();
+    fill(0, 0, 0);
+    rect(x-(h/150*30),y-(h/150*60),h/150*70,h/150*20);
+
+    noStroke();
+    fill(80, 23, 23);//brown eyes
+    ellipse(x-(h/150*13),y-(h/150*10),h/150*10,h/150*8);//left eye
+    ellipse(x+(h/150*12),y-(h/150*10),h/150*10,h/150*8);//right eye
+
+    stroke(0,0,0);
+    fill(156, 114, 72);//nose color
+    bezier(x,y-(h/150*5),x+(h/150*26),y+(h/150*15),x-(h/150*8),y+(h/150*15),x-(h/150*4),y+(h     /150*10));//nose
+
+    fill(255, 255, 255);//teeth color
+    arc(x+(h/150*3),y+(h/150*25),h/150*30,h/150*13,h/150*1,180);//mouth
+    line(x-(h/150*13),y+(h/150*24),x+(h/150*18),y+(h/150*24));
+}; 
+        drawAnt(256,354,80); 
+    var drawRay = function(bitmojiX,bitmojiY,bitmojiHeight) {
+    noStroke();
+    fill(196, 162, 125); // skin color
+    ellipse(bitmojiX+(bitmojiHeight/106*0),bitmojiY+(bitmojiHeight/106*-120),bitmojiHeight/106*88,bitmojiHeight/106*100); // face
+    
+    fill(59, 39, 29); // hair color
+    rect(bitmojiX+(bitmojiHeight/106*-38),bitmojiY+(bitmojiHeight/106*-155),bitmojiHeight/106*69,bitmojiHeight/106*5); // top hairline 
+    rect(bitmojiX+(bitmojiHeight/106*40),bitmojiY+(bitmojiHeight/106*-149),bitmojiHeight/106*5,bitmojiHeight/106*30); // right hairline
+    rect(bitmojiX-(bitmojiHeight/106*45),bitmojiY+(bitmojiHeight/106*-149),bitmojiHeight/106*5,bitmojiHeight/106*30); // left hairline
+    ellipse(bitmojiX+(bitmojiHeight/106*2),bitmojiY+(bitmojiHeight/106*-153),bitmojiHeight/106*71,bitmojiHeight/106*11); // lower front curl
+    ellipse(bitmojiX+(bitmojiHeight/106*-28),bitmojiY+(bitmojiHeight/106*-150),bitmojiHeight/106*35,bitmojiHeight/106*17); // lower left curl
+    ellipse(bitmojiX+(bitmojiHeight/106*31),bitmojiY+(bitmojiHeight/106*-150),bitmojiHeight/106*35,bitmojiHeight/106*17); // lower right curl
+    ellipse(bitmojiX-(bitmojiHeight/106*20),bitmojiY+(bitmojiHeight/106*-168),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*15),bitmojiY+(bitmojiHeight/106*-165),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*10),bitmojiY+(bitmojiHeight/106*-162),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*1),bitmojiY+(bitmojiHeight/106*-167),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*14),bitmojiY+(bitmojiHeight/106*-167),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*25),bitmojiY+(bitmojiHeight/106*-160),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*38),bitmojiY+(bitmojiHeight/106*-161),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*23),bitmojiY+(bitmojiHeight/106*-164),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+    ellipse(bitmojiX+(bitmojiHeight/106*17),bitmojiY+(bitmojiHeight/106*-164),bitmojiHeight/106*17,bitmojiHeight/106*17); // curl
+
+    fill(0, 0, 0);
+    ellipse(bitmojiX+(bitmojiHeight/106*-15),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*10,bitmojiHeight/106*9); // left eye back
+    ellipse(bitmojiX+(bitmojiHeight/106*12),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*10,bitmojiHeight/106*9); // right eye back
+    fill(255, 255, 255);
+    ellipse(bitmojiX+(bitmojiHeight/106*+-15),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*7,bitmojiHeight/106*6); // left eye white
+    ellipse(bitmojiX+(bitmojiHeight/106*12),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*6,bitmojiHeight/106*6); // right eye white
+    fill(0, 0, 0);
+    ellipse(bitmojiX+(bitmojiHeight/106*-15),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*4,bitmojiHeight/106*4); // left eye color
+    ellipse(bitmojiX+(bitmojiHeight/106*12),bitmojiY+(bitmojiHeight/106*-125),bitmojiHeight/106*4,bitmojiHeight/106*4); // right eye color
+    
+
+    fill(150, 124, 84); // nose color
+    bezier(bitmojiX+(bitmojiHeight/106*1),bitmojiY+(bitmojiHeight/106*-121),bitmojiX+(bitmojiHeight/106*8),bitmojiY+(bitmojiHeight/106*-104),bitmojiX+(bitmojiHeight/106*-12),bitmojiY+(bitmojiHeight/106*-104),bitmojiX+(bitmojiHeight/106*-5),bitmojiY+(bitmojiHeight/106*-115)); //nose
+    
+    
+    fill(255, 255, 255); // teeth
+    arc(bitmojiX+(bitmojiHeight/106*-1),bitmojiY+(bitmojiHeight/106*-100),bitmojiHeight/106*32,bitmojiHeight/106*23,bitmojiHeight/106*-4,bitmojiHeight/106*175); // mouth
+    fill(0, 0, 0);
+    arc(bitmojiX+(bitmojiHeight/106*-1),bitmojiY+(bitmojiHeight/106*-98),bitmojiHeight/106*26,bitmojiHeight/106*15,bitmojiHeight/106*-4,bitmojiHeight/106*175); // mouth
+    
+    fill(222, 222, 222); // hat color
+    arc(bitmojiX+(bitmojiHeight/106*-11),bitmojiY+(bitmojiHeight/106*-155),bitmojiHeight/106*121,bitmojiHeight/106*-68,bitmojiHeight/106*-4,bitmojiHeight/106*100); // hat part
+    ellipse(bitmojiX+(bitmojiHeight/106*-15),bitmojiY+(bitmojiHeight/106*-168),bitmojiHeight/106*71,bitmojiHeight/106*41); // hat part 
+    rect(bitmojiX+(bitmojiHeight/106*-46),bitmojiY+(bitmojiHeight/106*-162),bitmojiHeight/106*97,bitmojiHeight/106*10); // hat part
+    
+    fill(171, 0, 0);
+    rect(bitmojiX+(bitmojiHeight/106*-34),bitmojiY+(bitmojiHeight/106*-68),bitmojiHeight/106*69,bitmojiHeight/106*106); //shirt
+    quad(bitmojiX+(bitmojiHeight/106*-77),bitmojiY+(bitmojiHeight/106*10),bitmojiX+(bitmojiHeight/106*-67),bitmojiY+(bitmojiHeight/106*-40),bitmojiX+(bitmojiHeight/106*-31),bitmojiY+(bitmojiHeight/106*-72),bitmojiX+(bitmojiHeight/106*-49),bitmojiY+(bitmojiHeight/106*2)); // r sleeve
+    quad(bitmojiX+(bitmojiHeight/106*82),bitmojiY+(bitmojiHeight/106*14),bitmojiX+(bitmojiHeight/106*71),bitmojiY+(bitmojiHeight/106*-34),bitmojiX+(bitmojiHeight/106*35),bitmojiY+(bitmojiHeight/106*-66),bitmojiX+(bitmojiHeight/106*51),bitmojiY+(bitmojiHeight/106*2)); // l sleeve
+    
+    fill(201, 201, 201);
+    quad(bitmojiX+(bitmojiHeight/106*-3),bitmojiY+(bitmojiHeight/106*-57),bitmojiX+(bitmojiHeight/106*8),bitmojiY+(bitmojiHeight/106*-67),bitmojiX+(bitmojiHeight/106*-31),bitmojiY+(bitmojiHeight/106*-82),bitmojiX+(bitmojiHeight/106*-36),bitmojiY+(bitmojiHeight/106*-70)); // l collar
+    quad(bitmojiX+(bitmojiHeight/106*9),bitmojiY+(bitmojiHeight/106*-56),bitmojiX+(bitmojiHeight/106*36),bitmojiY+(bitmojiHeight/106*-70),bitmojiX+(bitmojiHeight/106*30),bitmojiY+(bitmojiHeight/106*-81),bitmojiX+(bitmojiHeight/106*-15), bitmojiY+(bitmojiHeight/106*-63)); // r collar
+    
+    fill(0, 0, 0);
+    rect(bitmojiX+(bitmojiHeight/106*-23),bitmojiY+(bitmojiHeight/106*-47),bitmojiHeight/106*3,bitmojiHeight/106*23); // r lettering
+    rect(bitmojiX+(bitmojiHeight/106*-22),bitmojiY+(bitmojiHeight/106*-47),bitmojiHeight/106*14,bitmojiHeight/106*3); // r lettering
+    rect(bitmojiX+(bitmojiHeight/106*-22),bitmojiY+(bitmojiHeight/106*-38),bitmojiHeight/106*14,bitmojiHeight/106*3); // r lettering
+    rect(bitmojiX+(bitmojiHeight/106*-11),bitmojiY+(bitmojiHeight/106*-46),bitmojiHeight/106*3,bitmojiHeight/106*11); // r lettering
+    rect(bitmojiX+(bitmojiHeight/106*-15),bitmojiY+(bitmojiHeight/106*-35),bitmojiHeight/106*3,bitmojiHeight/106*11); // r lettering
+    
+    rect(bitmojiX+(bitmojiHeight/106*2),bitmojiY+(bitmojiHeight/106*-46),bitmojiHeight/106*3,bitmojiHeight/106*23); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*2),bitmojiY+(bitmojiHeight/106*-47),bitmojiHeight/106*14,bitmojiHeight/106*3); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*2),bitmojiY+(bitmojiHeight/106*-38),bitmojiHeight/106*14,bitmojiHeight/106*3); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*14),bitmojiY+(bitmojiHeight/106*-47),bitmojiHeight/106*3,bitmojiHeight/106*11); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*3),bitmojiY+(bitmojiHeight/106*-35),bitmojiHeight/106*14,bitmojiHeight/106*3); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*3),bitmojiY+(bitmojiHeight/106*-26),bitmojiHeight/106*14,bitmojiHeight/106*3); // b lettering
+    rect(bitmojiX+(bitmojiHeight/106*15),bitmojiY+(bitmojiHeight/106*-35),bitmojiHeight/106*3,bitmojiHeight/106*11); // b lettering
+}; 
+        drawRay(140,364,34);
+    
+// Text information
+    fill(0, 0, 0);
+    textSize(14); 
+    text("There is an aggressive meteor shower incoming that is going to", 4,5); 
+    text("strike your area! The only option you have is to try and outrun it. ", 4,23);
+    text("Are you brave enough to try?", 102,41);
+    text("Choose your player below, and see how long you can last trying", 3,75);
+    text("to find the ", 113,91);
+    textSize(16); 
+    text("ESCAPE ROUTE!", 179,90);
+    textSize(22); 
+    text("Controls: ", 152,125);
+    text("Up/Jump = Up Arrow", 98,149);
+    text("Right = Right Arrow", 104,174);
+    text("Left = Left Arrow", 118,199);
+    text("Down = Release Up Arrow", 76,224);
+    text("Choose Your Player: ", 104,273);
+    
+// Draw player select buttons
+    rayButton.draw(); 
+    antButton.draw(); 
 }; 
 
-/* Scene switch on button click */ 
-draw = function() {
-    if (currentScene === 0)
-    {Splash();}
-    else {
-        playScreen(); 
-    } 
+/* mouseClicked function for buttons */ 
+mouseClicked = function() {
+// to change scenes when buttons are clicked
+    if (currentScene === 0) { 
+        rulesButton.handleMouseClick(); } 
+    else if (currentScene === 1) {
+        rayButton.handleMouseClick();
+        antButton.handleMouseClick(); }
+    else if (currentScene === 4) { 
+        restartButton.handleMouseClick(); }
+    }; 
+    
+/* 4: End Screen  */ 
+var endScreen = function() {
+    
+currentScene = 4; // set currentScene value
+background(135, 0, 0); // background 
+
+// Text Info. 
+    fill(15, 0, 15);
+    textSize(100); 
+    text("GAME", 52,8); 
+    text("OVER!", 51,92); 
+    textSize(22); 
+    text("Can You Beat Your Record Time? ", 43,225); 
+    
+// Restart Button
+    restartButton.draw(); 
+}; 
+    
+/* Global variables for use in-game */ 
+var startTime = millis(); // to count in seconds
+var time = 0; // to keep track of time 
+var health = 0; // player health counter
+var numRocks = 2000; // amount of meteors 
+
+/* Bitmoji "Ray" Constructor Function */
+var Ray = function(bitmojiX,bitmojiY,bitmojiHeight) {
+    this.bitmojiX = bitmojiX;
+    this.bitmojiY = bitmojiY;
+    this.bitmojiHeight = bitmojiHeight || 50; 
+}; 
+
+Ray.prototype.draw = function() { // Draw method
+    this.bitmojiY = constrain(this.bitmojiY, 0, this.bitmojiHeight+320);
+    drawRay(this.bitmojiX, this.bitmojiY, this.bitmojiHeight); 
+}; 
+
+Ray.prototype.hop = function() { // hop method
+    this.bitmojiY -= 5;
 };
 
+Ray.prototype.left = function() { // hop method
+    this.bitmojiX -= 5;
+};
+
+Ray.prototype.right = function() { // hop method
+    this.bitmojiX += 5;
+};
+
+Ray.prototype.fall = function() { // fall method
+    this.bitmojiY += 5;
+};
+
+Ray.prototype.checkForHit = function(rock) { // method to check when bitmoji has hit a car
+    if ((rock.x  >= (this.bitmojiX - 17) && rock.x <= (this.bitmojiX + 17)) &&
+        (rock.y >= (this.bitmojiY + -42) && rock.y <= (this.bitmojiY + 0))) {
+            rock.y = 600; 
+            health += 1; 
+        } 
+};
+
+/* Bitmoji "Ant" Constructor Function */
+var Ant = function(x,y,h) {
+    this.x = x;
+    this.y = y;
+    this.h = h || 50; 
+}; 
+
+Ant.prototype.draw = function() { // Draw method
+    this.y = constrain(this.y, 0, this.h+320);
+    drawAnt(this.x, this.y - 35, this.h); 
+}; 
+
+Ant.prototype.hop = function() { // hop method
+    this.y -= 5;
+};
+
+Ant.prototype.left = function() { // hop method
+    this.x -= 5;
+};
+
+Ant.prototype.right = function() { // hop method
+    this.x += 5;
+};
+
+Ant.prototype.fall = function() { // fall method
+    this.y += 5;
+};
+
+Ant.prototype.checkForHit = function(rock) { // method to check when bitmoji has hit a car
+
+    if ((rock.x  >= (this.x - 17) && rock.x <= (this.x + 10)) &&
+        (rock.y >= (this.y + -61) && rock.y <= (this.y + -26))) {
+            rock.y = 600; 
+            health += 1; 
+        } 
+};
+
+/* Meteor Constructor Function */ 
+var Rock = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.img = getImage("cute/Rock");
+};
+Rock.prototype.draw = function() {
+    image(this.img, this.x, this.y, 30, 35);
+};
+
+/* Declaring variables to create 2 possible players */ 
+var ray = new Ray(200, 245, 23);
+var ant = new Ant(200,300,50); 
+
+/* Declaring arrays to push values into Meteors */ 
+var rocks = []; 
+var speed = []; 
+
+for (var i = 0; i < numRocks; i++) {  // pushes values to draw meteors
+    rocks.push(new Rock(i * 3 + -65, random(-6000, -1000))); }
+    
+for (var i = 0; i < numRocks; i++) {  // pushes values to vary speed
+    speed.push(round(random(4,8))); 
+}
+
+/* 2: Ray Screen */ 
+var playScreenRay = function() {
+
+image(getImage("space/background"), 0,0,500,500); // Screen Background
+
+// Player Ray health bar
+    image(getImage("space/healthheart"), 80,370,20,20); 
+    image(getImage("space/healthheart"), 102,370,20,20); 
+    image(getImage("space/healthheart"), 125,370,20,20); 
+
+// Player Ray health conditions to take away health if hit, and to end game when all health is gone
+    if (health >= 1) {
+    fill(76,124,156);
+    rect(80, 370, 20, 20); 
+}
+    if (health >= 2) { 
+    fill(76,124,156);
+    rect(102, 370, 20, 20); 
+} 
+    if (health >= 3) { 
+    fill(76,124,156);
+    rect(125, 370, 20, 20); 
+    currentScene = 4; 
+} 
+
+// To keep track of time and amount of health
+    time = round((millis() - startTime)/1000);
+    fill(255, 255, 255);
+    text("Time:  " + time, 310, 370); 
+    text("Health: ", 15, 370); 
+
+// Draws all instances of meteors & checks to see if player Ray has hit a rock
+    for (var i = 0; i < rocks.length; i++) { 
+        rocks[i].draw();
+        ray.checkForHit(rocks[i]);
+        rocks[i].y += speed[i]; // speed
+} 
+
+// Player Ray operating keys. keyCodes borrowed from Khan Documentation: https://www.khanacademy.org/computer-programming/keycode-processingjs/939888407   
+    if (keyIsPressed && keyCode === UP) {
+        ray.hop(); } 
+    else if (keyIsPressed && keyCode === LEFT) {
+        ray.left(); }
+    else if (keyIsPressed && keyCode === RIGHT) {
+        ray.right(); 
+    } else {
+        ray.fall();
+    }
+    ray.draw();
+}; 
+
+/* 3: Ant Screen  */ 
+var playScreenAnt = function() {
+
+image(getImage("space/background"), 0,0,500,500); // Screen Background
+
+// Player Ant health bar
+    image(getImage("space/healthheart"), 80,370,20,20); 
+    image(getImage("space/healthheart"), 102,370,20,20); 
+    image(getImage("space/healthheart"), 125,370,20,20); 
+
+// Player Ant health conditions to take away health if hit, and to end game when all health is gone
+    if (health >= 1) {
+    fill(76,124,156);
+    rect(80, 370, 20, 20); 
+}
+    if (health >= 2) { 
+    fill(76,124,156);
+    rect(102, 370, 20, 20); 
+} 
+    if (health >= 3) { 
+    fill(76,124,156);
+    rect(125, 370, 20, 20); 
+    currentScene = 4; 
+} 
+
+// To keep track of time and amount of health
+    time = round((millis() - startTime)/1000);
+    fill(255, 255, 255);
+    text("Time:  " + time, 310, 370); 
+    text("Health: ", 15, 370); 
+
+// Draws all instances of meteors & checks to see if player Ant has hit a rock
+for (var i = 0; i < rocks.length; i++) { 
+    rocks[i].draw();
+    ant.checkForHit(rocks[i]);
+    rocks[i].y += speed[i]; } 
+    
+// Player Ant operating keys. keyCodes borrowed from Khan Documentation: https://www.khanacademy.org/computer-programming/keycode-processingjs/939888407
+    if (keyIsPressed && keyCode === UP) {
+        ant.hop(); } 
+    else if (keyIsPressed && keyCode === LEFT) {
+        ant.left(); }
+    else if (keyIsPressed && keyCode === RIGHT) {
+        ant.right(); 
+    } else {
+        ant.fall();
+    }
+    ant.draw();
+}; 
+
+/* Scene switch on button clicks */ 
+draw = function() {
+    if (currentScene === 0) {
+    Splash(); }
+    else if (currentScene === 1) {
+        ruleScreen(); } 
+    else if (currentScene === 2) {
+        playScreenRay(); }
+    else if (currentScene === 3) {
+        playScreenAnt(); }
+    else if (currentScene === 4) { 
+        endScreen(); } 
+    else {
+    Splash(); } 
+
+};
